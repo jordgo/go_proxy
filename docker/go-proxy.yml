@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  go-proxy:
+    image: gh106/go-proxy:latest
+    deploy:
+      resources:
+        limits:
+          memory: "1g"
+    environment:
+      SERVER_PORT: 8080
+      HOST: ""                 #target host
+      PORT: ""                 #target port
+      PROTO: http              #http or https
+      SSL_PEM_PATH: ""         #specify if PROTO is https
+      SSL_KEY_PATH: ""         #specify if PROTO is https
+      TOKEN: "YWxhZGRpbjpvcGVuc2VzYW1l"   #any secret string for use in the request header
+    ports:
+      - "3128:8080"
+    volumes:
+      - '/home/george/go/projects/logs:/opt/docker/logs'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 1
+        max-size: 50m
