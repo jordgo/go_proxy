@@ -1,18 +1,33 @@
-# Use the official Golang image as the base image
-#FROM golang:1.22
-FROM alpine:3.20.2
+FROM golang:alpine AS builder
 
-# Set the working directory inside the container
-WORKDIR /app
+LABEL stage=gobuilder
 
-# Copy the source code into the container
+ENV CGO_ENABLED 0
+
+ENV GOOS linux
+
+#RUN apk update --no-cache && apk add --no-cache tzdata
+
+WORKDIR /build
+
+ADD go.mod .
+
+ADD go.sum .
+
+RUN go mod download
+
 COPY . .
 
-# Build the Go application
-#RUN go build -o main cmd/main.go
+RUN go build -ldflags="-s -w" -tags timetzdata -o /app/go_proxy cmd/main.go
 
-# Expose the port that your application listens on
-#EXPOSE 8080
+FROM alpine
 
-# Define the command to run your application
-CMD ["./main"]
+RUN apk update --no-cache && apk add --no-cache ca-certificates
+
+WORKDIR /app
+
+COPY --from=builder /app/go_proxy /app/go_proxy
+
+RUN mkdir /app/logs
+
+CMD ["./go_proxy"]

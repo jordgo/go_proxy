@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  go-proxy:
+    image: gh106/go-proxy:latest
+    deploy:
+      resources:
+        limits:
+          memory: "1g"
+          cpus: "2"
+    environment:
+      SERVER_PORT: 8080               #optional (8080 by default)
+      SERVER_PROTO: http              #http or https (http by default)
+      SSL_PEM_PATH: ""                #specify if SERVER_PROTO is https
+      SSL_KEY_PATH: ""                #specify if SERVER_PROTO is https
+      TARGET_PROTO: https              #http or https (https by default)
+      TARGET_HOST: "fmst.info"          # ip or hostname
+      TARGET_PORT: ""                 #optional
+      USER_NAME: "proxy"
+      USER_PWD: "YWxhZGRpbjpvcGVuc2VzYW1l"   
+    ports:
+      - "3128:8080"
+    volumes:
+      - '/home/george/go/projects/logs:/app/logs'
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-file: 1
+    #     max-size: 50m
+    # network_mode: "host"  #compose test
+

@@ -2,7 +2,7 @@ package goproxy
 
 
 import (
-	"http"
+	// "net/http"
 
 )
 

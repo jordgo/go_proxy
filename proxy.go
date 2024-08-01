@@ -3,7 +3,7 @@ package goproxy
 import (
 	// "log"
 	"net"
-	"http"
+	"net/http"
 )
 
 
